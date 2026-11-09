@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation — ShopNow</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <h1 class="logo">ShopNow</h1>
+
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="about.html">About</a>
+      <a href="cart.html">Cart</a>
+      <span id="auth-nav-slot"></span>
+    </nav>
+  </header>
+
+  <main style="
+    padding: 2rem;
+    max-width: 900px;
+    margin: auto;
+  ">
+
+    <section style="text-align: center; margin-bottom: 2rem;">
+      <h1>🎉 Thank You for Your Order!</h1>
+
+      <p style="margin-top: 1rem;">
+        Your order has been successfully submitted.
+      </p>
+    </section>
+
+    <section style="
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 2rem;
+    ">
+
+      <h2>📦 Order Details</h2>
+
+      <p style="margin-top: 1rem;">
+        <strong>Order Number:</strong>
+        #<span id="order-number">Loading...</span>
+      </p>
+
+      <p style="margin-top: 1rem;">
+        <strong>Order Status:</strong>
+        <span id="order-status">Loading...</span>
+      </p>
+
+      <hr style="margin: 1.5rem 0;">
+
+      <h2>🛒 Purchased Items</h2>
+
+      <div id="items" style="margin-top: 1rem;">
+        <p>Loading your order items...</p>
+      </div>
+
+      <hr style="margin: 1.5rem 0;">
+
+      <h2>
+        Total: AED
+        <span id="order-total">0.00</span>
+      </h2>
+
+    </section>
+
+    <section style="text-align: center; margin-top: 2rem;">
+
+      <a
+        href="products.html"
+        style="
+          display: inline-block;
+          background: #1f3864;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 6px;
+          text-decoration: none;
+        ">
+        Continue Shopping
+      </a>
+
+      <p style="margin-top: 1.5rem;">
+        <a href="index.html">Return to Home</a>
+      </p>
+
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 ShopNow.</p>
+  </footer>
+
+  <!-- Supabase CDN must load before app.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

@@ -1,38 +1,63 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart — ShopNow</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="products.html">Products</a>
-        <a href="cart.html">Cart</a>
-        <span id="auth-nav-slot"></span>
+  <header class="site-header">
+    <h1 class="logo">ShopNow</h1>
+
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="about.html">About</a>
+      <a href="cart.html">Cart</a>
+      <span id="auth-nav-slot"></span>
     </nav>
+  </header>
 
-    <h1>Shopping Cart</h1>
+  <main style="padding: 2rem; max-width: 1000px; margin: auto;">
 
-    <div id="cart-items"></div>
+    <h1>🛒 Your Shopping Cart</h1>
 
-    <h3>
+    <p>Review your products before checkout.</p>
+
+    <section style="margin-top: 2rem;">
+      <div id="cart-items">
+        <p>Loading cart...</p>
+      </div>
+    </section>
+
+    <section style="margin-top: 2rem;">
+      <h2>
         Subtotal: AED <span id="subtotal">0.00</span>
-    </h3>
+      </h2>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="JS/app.js"></script>
+      <button
+        type="button"
+        id="checkout-btn"
+        style="margin-top: 1rem; padding: 12px 24px; cursor: pointer;">
+        Proceed to Checkout
+      </button>
 
-    <script>
-        // The renderCart() function call.
-         renderCart();
-         requireLogin();
-    </script>
-    
+      <p style="margin-top: 1rem;">
+        <a href="products.html">← Continue Shopping</a>
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 ShopNow.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/app.js"></script>
 
 </body>
 </html>
-

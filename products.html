@@ -1,110 +1,70 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>ShopNow — Products</title>
-
-<link rel="stylesheet" href="css/style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopNow — Home</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
-
 <body>
+  <header class="site-header">
+    <h1 class="logo">ShopNow</h1>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+ 
+  <section class="hero">
+    <h2>Everyday tech, honest prices.</h2>
+  </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/app.js"></script>
+    <input 
+        type="text" 
+        id="search-box" 
+        placeholder="Search products..."
+    >
 
-<header class="site-header">
+    <button class="category-btn" data-category="All">All</button>
 
-<h1 class="logo">ShopNow</h1>
+<button class="category-btn" data-category="Computers">
+    Computers
+</button>
 
+<button class="category-btn" data-category="Accessories">
+    Accessories
+</button>
 
-<nav class="main-nav">
+<button class="category-btn" data-category="Phones">
+    Phones
+</button>
 
-<a href="index.html">Home</a>
-
-<a href="products.html">Products</a>
-
-<a href="about.html">About</a>
-
-</nav>
-
-</header>
-
-
-<main>
-
-
-<section class="products-header">
-
-<h2>Our Products</h2>
-
-<p>Find the technology you need at honest prices.</p>
-
-</section>
-
-
-<section class="filters">
-
-
-<input
-
-type="text"
-
-id="search-box"
-
-placeholder="Search products..."
-
->
-
-
-<div class="category-buttons">
-
-<button class="category-btn" data-category="All">All</button>
-
-<button class="category-btn" data-category="Computers">Computers</button>
-
-<button class="category-btn" data-category="Phones">Phones</button>
-
-<button class="category-btn" data-category="Accessories">Accessories</button>
-
-</div>
-
+<button class="category-btn" data-category="Samsung Camera">
+    Samsung Camera
+</button>
 
 <select id="sort-select">
 
-<option value="default">Sort Products</option>
+    <option value="default">
+        Sort by Price
+    </option>
 
-<option value="low-high">Price: Low to High</option>
+    <option value="low-high">
+        Price: Low to High
+    </option>
 
-<option value="high-low">Price: High to Low</option>
+    <option value="high-low">
+        Price: High to Low
+    </option>
 
 </select>
-
-
-</section>
-
-
-<section class="product-grid" id="product-list"></section>
-
-
-</main>
-
-
-<footer class="site-footer">
-
-<p>&copy; 2025 ShopNow.</p>
-
-</footer>
-
-
+<span id="auth-nav-slot"></span>
+<div id="product-list" class="product-grid"></div> 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js"></script> 
 
 </body>
-
 </html>
+
