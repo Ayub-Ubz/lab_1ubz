@@ -74,3 +74,4 @@ input, select, textarea { padding: .55rem .7rem; border: 1px solid #c8cfdc; bord
 /* Toast message */
 #toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%) translateY(150%); background: #1f3864; color: #fff; padding: .75rem 1.25rem; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.2); transition: transform .25s ease; z-index: 100; max-width: 90vw; }
 #toast.show { transform: translateX(-50%) translateY(0); }
+.cart-item button { justify-self: start; }
