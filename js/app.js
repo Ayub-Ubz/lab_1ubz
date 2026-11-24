@@ -35,8 +35,14 @@ function escapeHTML(value) {
 // PRODUCTS - LAB 2 AND LAB 4
 // =========================================
 
-function renderProducts(products) {
-  const container = document.getElementById("product-list");
+function stockLabel(stock) {
+  if (stock <= 0) return '<span class="badge out">Out of stock</span>';
+  if (stock <= 5) return `<span class="badge low">Only ${stock} left</span>`;
+  return '<span class="badge in">In stock</span>';
+}
+
+function renderProducts(products, containerId = "product-list") {
+  const container = document.getElementById(containerId);
   if (!container) return;
 
   if (!products.length) {
@@ -48,18 +54,20 @@ function renderProducts(products) {
     const id = Number(p.product_id);
     const price = Number(p.price);
     const stock = Number(p.stock);
+    const category = p.category?.category_name || "";
 
     return `
       <div class="product">
+        <p class="category-tag">${escapeHTML(category)}</p>
         <h3>${escapeHTML(p.name)}</h3>
-        <p>${escapeHTML(p.description || "")}</p>
-        <p>Price: AED ${price.toFixed(2)}</p>
-        <p>Stock: ${stock}</p>
+        <p class="muted">${escapeHTML(p.description || "")}</p>
+        <p class="price">AED ${price.toFixed(2)}</p>
+        <p>${stockLabel(stock)}</p>
 
-        <button class="add-cart-btn"
+        <button class="add-cart-btn btn"
           data-id="${id}"
           ${stock <= 0 ? "disabled" : ""}>
-          Add to Cart
+          ${stock <= 0 ? "Out of Stock" : "Add to Cart"}
         </button>
 
         <a href="product-detail.html?id=${id}">
@@ -388,7 +396,7 @@ async function updateNavForAuth() {
   }
 
   slot.innerHTML = `
-    <span>Hi, ${escapeHTML(user.email)}</span>
+    <span class="user-email">Hi, ${escapeHTML(user.email)}</span>
     <a href="#" id="logout-link">Log out</a>
   `;
 
@@ -416,6 +424,10 @@ async function requireLogin() {
 
   if (error || !user) {
     alert("Please log in to continue.");
+    // Remember where the user was so login can send them back (e.g. to the cart).
+    try {
+      sessionStorage.setItem("returnTo", window.location.pathname.split("/").pop() || "index.html");
+    } catch {}
     window.location.href = "login.html";
     return null;
   }
@@ -464,7 +476,14 @@ if (document.getElementById("login-form")) {
       if (error) {
         alert("Login error: " + error.message);
       } else {
-        window.location.href = "index.html";
+        let target = "index.html";
+        try {
+          const saved = sessionStorage.getItem("returnTo");
+          // Only allow local page names (no external redirects).
+          if (saved && /^[\w-]+\.html$/.test(saved) && saved !== "login.html") target = saved;
+          sessionStorage.removeItem("returnTo");
+        } catch {}
+        window.location.href = target;
       }
     });
 }
@@ -781,6 +800,89 @@ if (
   document.getElementById("items")
 ) {
   loadConfirmation();
+}
+
+// =========================================
+// HOME PAGE - FEATURED PRODUCTS
+// =========================================
+
+async function loadFeatured() {
+  const container = document.getElementById("featured-products");
+  if (!container) return;
+
+  const { data, error } = await supabaseClient
+    .from("product")
+    .select("*, category(category_name)")
+    .gt("stock", 0)
+    .order("price", { ascending: false })
+    .limit(8);
+
+  if (error) {
+    console.error("Featured error:", error);
+    container.textContent = "Could not load products.";
+    return;
+  }
+
+  allProducts = data || [];
+  renderProducts(allProducts, "featured-products");
+}
+
+if (document.getElementById("featured-products")) {
+  loadFeatured();
+}
+
+// =========================================
+// PRODUCT DETAIL PAGE - LAB 4
+// =========================================
+
+async function loadProductDetail() {
+  const detail = document.getElementById("detail");
+  if (!detail) return;
+
+  const productId = new URLSearchParams(window.location.search).get("id");
+
+  if (!productId || !/^[1-9]\d*$/.test(productId)) {
+    detail.innerHTML = "<p>Product ID is missing or invalid.</p>";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("product")
+    .select("*, category(category_name)")
+    .eq("product_id", Number(productId))
+    .maybeSingle();
+
+  if (error) {
+    console.error("Supabase error:", error);
+    detail.innerHTML = "<p>Error loading product details.</p>";
+    return;
+  }
+
+  if (!data) {
+    detail.innerHTML = "<p>Product not found.</p>";
+    return;
+  }
+
+  const stock = Number(data.stock);
+  document.title = `${data.name} — ShopNow`;
+
+  detail.innerHTML = `
+    <p class="category-tag">${escapeHTML(data.category?.category_name || "")}</p>
+    <h2>${escapeHTML(data.name)}</h2>
+    <p class="muted">${escapeHTML(data.description || "")}</p>
+    <p class="price">AED ${Number(data.price).toFixed(2)}</p>
+    <p>${stockLabel(stock)} <span class="muted">(${stock} available)</span></p>
+    <button id="detail-add-btn" class="btn" ${stock <= 0 ? "disabled" : ""}>
+      ${stock <= 0 ? "Out of Stock" : "Add to Cart"}
+    </button>
+  `;
+
+  document.getElementById("detail-add-btn")
+    .addEventListener("click", () => addToCart(data));
+}
+
+if (document.getElementById("detail")) {
+  loadProductDetail();
 }
 
 // =========================================

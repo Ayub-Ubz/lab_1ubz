@@ -10,14 +10,13 @@
 <body>
 
   <header class="site-header">
-    <h1 class="logo">ShopNow</h1>
-
+    <h1 class="logo"><a href="index.html">ShopNow</a></h1>
     <nav class="main-nav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="about.html">About</a>
-      <a href="cart.html">Cart</a>
-      <span id="auth-nav-slot"></span>
+      <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+      <span id="auth-nav-slot" class="auth-slot"></span>
     </nav>
   </header>
 
@@ -93,9 +92,7 @@
 
   </main>
 
-  <footer class="site-footer">
-    <p>&copy; 2026 ShopNow.</p>
-  </footer>
+  <footer class="site-footer"><p>&copy; 2026 ShopNow. All rights reserved.</p></footer>
 
   <!-- Supabase CDN must load before app.js -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

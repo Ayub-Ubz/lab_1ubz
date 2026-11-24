@@ -3,27 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ShopNow — Home</title>
+  <title>Home — ShopNow</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="site-header">
-    <h1 class="logo">ShopNow</h1>
+    <h1 class="logo"><a href="index.html">ShopNow</a></h1>
     <nav class="main-nav">
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="about.html">About</a>
-      <a href="cart.html">cart</a>
+      <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+      <span id="auth-nav-slot" class="auth-slot"></span>
     </nav>
   </header>
- 
+
   <section class="hero">
     <h2>Everyday tech, honest prices.</h2>
+    <p>Laptops, phones and accessories delivered across the UAE.</p>
+    <a class="btn" href="products.html">Shop all products</a>
   </section>
- 
-  <section class="product-grid" id="featured-products"></section>
- 
-  <footer class="site-footer"><p>&copy; 2025 ShopNow.</p></footer>
+
+  <main class="container">
+    <h2 class="section-title">Featured products</h2>
+    <section class="product-grid" id="featured-products">
+      <p>Loading products...</p>
+    </section>
+  </main>
+
+  <footer class="site-footer"><p>&copy; 2026 ShopNow. All rights reserved.</p></footer>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/app.js"></script>
 </body>
