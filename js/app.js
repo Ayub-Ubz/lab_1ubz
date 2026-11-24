@@ -792,3 +792,95 @@ if (document.getElementById("auth-nav-slot")) {
 }
 
 updateCartCount();
+
+// =========================================
+// SMART PRODUCT SEARCH - LAB 9
+// (plain keyword scoring - not real AI)
+// =========================================
+
+// Step 1: score a product by how many query words appear in its text.
+function scoreProduct(product, queryWords) {
+  const categoryName =
+    typeof product.category === "object"
+      ? product.category?.category_name
+      : product.category;
+
+  const text =
+    `${product.name} ${product.description || ""} ${categoryName || ""}`
+      .toLowerCase();
+
+  let score = 0;
+  queryWords.forEach(word => {
+    if (text.includes(word)) score += 1;
+  });
+
+  return score;
+}
+
+// Step 2: simple rule-based price understanding ("under 500" / "below 500").
+function extractMaxPrice(query) {
+  const match = query.match(/(?:under|below)\s+(\d+)/i);
+  return match ? Number(match[1]) : null;
+}
+
+function smartSearch(query, products) {
+  const maxPrice = extractMaxPrice(query);
+
+  const candidates = maxPrice !== null
+    ? products.filter(p => Number(p.price) <= maxPrice)
+    : products;
+
+  // Remove the price phrase so "under" and "200" are not scored as keywords.
+  const cleaned = query
+    .toLowerCase()
+    .replace(/(?:under|below)\s+\d+/g, " ");
+
+  // length > 2 drops short filler words (a simple "stopword removal").
+  const queryWords = cleaned.split(/\s+/).filter(w => w.length > 2);
+
+  // Price-only query (e.g. "under 300"): return the cheapest matches.
+  if (queryWords.length === 0) {
+    return candidates
+      .slice()
+      .sort((a, b) => Number(a.price) - Number(b.price))
+      .slice(0, 5);
+  }
+
+  return candidates
+    .map(p => ({ product: p, score: scoreProduct(p, queryWords) }))
+    .filter(r => r.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5)
+    .map(r => r.product);
+}
+
+// Step 3: wire the search box into products.html.
+const smartBox = document.getElementById("smart-search");
+
+if (smartBox) {
+  smartBox.addEventListener("input", async e => {
+    const query = e.target.value.trim();
+    const resultsDiv = document.getElementById("smart-results");
+
+    if (query.length < 3) {
+      resultsDiv.innerHTML = "";
+      return;
+    }
+
+    // Use the catalogue already loaded; fetch it if it is not there yet.
+    if (!allProducts.length) {
+      const { data } = await supabaseClient
+        .from("product")
+        .select("*, category(category_name)");
+      allProducts = data || [];
+    }
+
+    const matches = smartSearch(query, allProducts);
+
+    resultsDiv.innerHTML = matches.length
+      ? matches.map(p =>
+          `<p class="smart-hit">${escapeHTML(p.name)} — AED ${Number(p.price).toFixed(2)}</p>`
+        ).join("")
+      : "<p>No matches. Try different words.</p>";
+  });
+}

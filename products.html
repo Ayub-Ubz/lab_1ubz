@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ShopNow — Home</title>
+  <title>ShopNow — Products</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -14,54 +14,36 @@
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="about.html">About</a>
+      <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+      <span id="auth-nav-slot"></span>
     </nav>
   </header>
- 
+
   <section class="hero">
     <h2>Everyday tech, honest prices.</h2>
   </section>
 
-    <input 
-        type="text" 
-        id="search-box" 
-        placeholder="Search products..."
-    >
+  <section class="controls">
+    <input type="text" id="search-box" placeholder="Search products...">
 
-    <button class="category-btn" data-category="All">All</button>
+    <select id="sort-select">
+      <option value="default">Sort by Price</option>
+      <option value="low-high">Price: Low to High</option>
+      <option value="high-low">Price: High to Low</option>
+    </select>
 
-<button class="category-btn" data-category="Computers">
-    Computers
-</button>
+    <div id="category-filters" class="category-filters"></div>
+  </section>
 
-<button class="category-btn" data-category="Accessories">
-    Accessories
-</button>
+  <!-- LAB 9: Smart Product Search -->
+  <section class="smart-search">
+    <h3>Smart Search</h3>
+    <input type="text" id="smart-search" placeholder='Try: "accessories under 200" or "samsung phone"'>
+    <div id="smart-results"></div>
+  </section>
 
-<button class="category-btn" data-category="Phones">
-    Phones
-</button>
+  <div id="product-list" class="product-grid"></div>
 
-<button class="category-btn" data-category="Samsung Camera">
-    Samsung Camera
-</button>
-
-<select id="sort-select">
-
-    <option value="default">
-        Sort by Price
-    </option>
-
-    <option value="low-high">
-        Price: Low to High
-    </option>
-
-    <option value="high-low">
-        Price: High to Low
-    </option>
-
-</select>
-<span id="auth-nav-slot"></span>
-<div id="product-list" class="product-grid"></div> 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/app.js"></script> 
 

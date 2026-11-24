@@ -5,6 +5,12 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_ANON_KEY
 );
 
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[c]);
+}
+
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
 
@@ -39,10 +45,10 @@ async function loadProduct() {
     }
 
     detail.innerHTML = `
-        <h2>${data.name}</h2>
-        <p>${data.description ?? ""}</p>
-        <p>Price: AED ${data.price}</p>
-        <p>Stock: ${data.stock}</p>
+        <h2>${escapeHTML(data.name)}</h2>
+        <p>${escapeHTML(data.description)}</p>
+        <p>Price: AED ${Number(data.price).toFixed(2)}</p>
+        <p>Stock: ${Number(data.stock)}</p>
     `;
 }
 
