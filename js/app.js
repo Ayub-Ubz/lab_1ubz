@@ -20,6 +20,21 @@ let currentCategory = "All";
 let searchTerm = "";
 let sortOrder = "default";
 
+// TOAST MESSAGES (non-blocking replacement for alert)
+function showToast(message) {
+  let box = document.getElementById("toast");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "toast";
+    box.setAttribute("role", "status");
+    document.body.appendChild(box);
+  }
+  box.textContent = message;
+  box.classList.add("show");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => box.classList.remove("show"), 2800);
+}
+
 // SECURITY HELPER
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -222,7 +237,7 @@ function addToCart(product) {
   const stock = Number(product.stock);
 
   if (!Number.isInteger(id) || stock <= 0) {
-    alert("This product is unavailable.");
+    showToast("This product is unavailable.");
     return;
   }
 
@@ -232,7 +247,7 @@ function addToCart(product) {
 
   if (existing) {
     if (Number(existing.quantity) >= stock) {
-      alert("Not enough stock available.");
+      showToast("Not enough stock available.");
       return;
     }
 
@@ -248,7 +263,7 @@ function addToCart(product) {
   }
 
   saveCart(cart);
-  alert("Product added to cart!");
+  showToast("Product added to cart!");
 }
 
 function removeFromCart(productId) {
@@ -276,7 +291,7 @@ function updateQuantity(productId, quantity) {
     qty < 1 ||
     qty > Number(item.stock)
   ) {
-    alert("Invalid quantity or insufficient stock.");
+    showToast("Invalid quantity or insufficient stock.");
     renderCart();
     return;
   }
@@ -365,7 +380,7 @@ if (document.getElementById("checkout-btn")) {
     .addEventListener("click", async () => {
 
       if (getCart().length === 0) {
-        alert("Your cart is empty!");
+        showToast("Your cart is empty!");
         return;
       }
 
@@ -411,7 +426,7 @@ async function logout() {
   const { error } = await supabaseClient.auth.signOut();
 
   if (error) {
-    alert(error.message);
+    showToast(error.message);
     return;
   }
 
@@ -423,12 +438,12 @@ async function requireLogin() {
     await supabaseClient.auth.getUser();
 
   if (error || !user) {
-    alert("Please log in to continue.");
+    showToast("Please log in to continue.");
     // Remember where the user was so login can send them back (e.g. to the cart).
     try {
       sessionStorage.setItem("returnTo", window.location.pathname.split("/").pop() || "index.html");
     } catch {}
-    window.location.href = "login.html";
+    setTimeout(() => { window.location.href = "login.html"; }, 900);
     return null;
   }
 
@@ -450,9 +465,9 @@ if (document.getElementById("register-form")) {
       });
 
       if (error) {
-        alert("Registration error: " + error.message);
+        showToast("Registration error: " + error.message);
       } else {
-        alert("Registration successful!");
+        showToast("Registration successful!");
         window.location.href = "login.html";
       }
     });
@@ -474,7 +489,7 @@ if (document.getElementById("login-form")) {
         });
 
       if (error) {
-        alert("Login error: " + error.message);
+        showToast("Login error: " + error.message);
       } else {
         let target = "index.html";
         try {
@@ -502,12 +517,12 @@ async function placeOrder(name, address, phone) {
   phone = String(phone || "").trim();
 
   if (!name || !address) {
-    alert("Please enter your name and address.");
+    showToast("Please enter your name and address.");
     return false;
   }
 
   if (!/^\+?[0-9]{7,15}$/.test(phone.replace(/\s/g, ""))) {
-    alert("Please enter a valid phone number.");
+    showToast("Please enter a valid phone number.");
     return false;
   }
 
@@ -517,7 +532,7 @@ async function placeOrder(name, address, phone) {
   const cart = getCart();
 
   if (cart.length === 0) {
-    alert("Your cart is empty.");
+    showToast("Your cart is empty.");
     return false;
   }
 
@@ -531,7 +546,7 @@ async function placeOrder(name, address, phone) {
       !Number.isInteger(qty) || qty < 1 ||
       !Number.isFinite(price) || price < 0
     ) {
-      alert("Your cart contains invalid product information.");
+      showToast("Your cart contains invalid product information.");
       return false;
     }
   }
@@ -561,7 +576,7 @@ async function placeOrder(name, address, phone) {
       );
 
       if (!product) {
-        alert("A product in your cart is no longer available.");
+        showToast("A product in your cart is no longer available.");
         return false;
       }
 
@@ -569,7 +584,7 @@ async function placeOrder(name, address, phone) {
       const price = Number(product.price);
 
       if (quantity > Number(product.stock)) {
-        alert("Not enough stock for " + product.name);
+        showToast("Not enough stock for " + product.name);
         return false;
       }
 
@@ -596,7 +611,7 @@ async function placeOrder(name, address, phone) {
 
     if (orderError) {
       console.error("Order error:", orderError);
-      alert("Could not place order: " + orderError.message);
+      showToast("Could not place order: " + orderError.message);
       return false;
     }
 
@@ -615,7 +630,7 @@ async function placeOrder(name, address, phone) {
     if (itemError) {
       console.error("Order item error:", itemError);
 
-      alert(
+      showToast(
         "Order #" + order.orderr_id +
         " was created, but saving the items failed. " +
         "Please do not submit another order yet. " +
@@ -638,7 +653,7 @@ async function placeOrder(name, address, phone) {
 
   } catch (error) {
     console.error("Checkout error:", error);
-    alert("Checkout failed: " + error.message);
+    showToast("Checkout failed: " + error.message);
     return false;
   } finally {
     orderSaving = false;
@@ -683,12 +698,12 @@ if (document.getElementById("checkout-form")) {
     const phone = document.getElementById("phone").value.trim();
 
     if (!name || !address) {
-      alert("Name and address are required.");
+      showToast("Name and address are required.");
       return;
     }
 
     if (!/^\+?[0-9]{7,15}$/.test(phone.replace(/\s/g, ""))) {
-      alert("Please enter a valid phone number.");
+      showToast("Please enter a valid phone number.");
       return;
     }
 
